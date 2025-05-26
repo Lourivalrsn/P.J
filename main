@@ -1,0 +1,80 @@
+import javax.swing.*;
+
+class Main {
+    public static void main(String[] args) {
+        LojaManager loja = new LojaManager();
+        int opcao;
+
+        do {
+            opcao = Integer.parseInt(JOptionPane.showInputDialog(
+                    """
+                            ==== Menu ====
+                            1 - Cadastrar Cliente
+                            2 - Cadastrar Produto
+                            3 - Realizar Venda
+                            4 - Listar Clientes
+                            5 - Listar Produtos
+                            6 - Listar Vendas
+                            0 - Sair
+                            Escolha uma opção:"""));
+
+            switch (opcao) {
+                case 1 -> {
+                    String nome = JOptionPane.showInputDialog("Digite o nome do cliente:");
+                    String cpf = JOptionPane.showInputDialog("Digite o CPF (11 dígitos):");
+                    try {
+                        loja.adicionarCliente(new Cliente(nome, cpf));
+                    } catch (IllegalArgumentException e) {
+                        JOptionPane.showMessageDialog(null, e.getMessage());
+                    }
+                }
+                case 2 -> {
+                    int id = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do produto:"));
+                    String nome = JOptionPane.showInputDialog("Digite o nome do produto:");
+                    double preco = Double.parseDouble(JOptionPane.showInputDialog("Digite o preço do produto:"));
+                    int tipo = Integer.parseInt(JOptionPane.showInputDialog("1 - Produto, 2 - Livro:"));
+                    if (tipo == 1) {
+                        loja.adicionarProduto(new Produto(id, nome, preco));
+                    } else if (tipo == 2) {
+                        String autor = JOptionPane.showInputDialog("Digite o autor do livro:");
+                        loja.adicionarProduto(new Livro(id, nome, preco, autor));
+                    }
+                }
+                case 3 -> {
+                    String cpfCliente = JOptionPane.showInputDialog("Digite o CPF do cliente:");
+                    Cliente cliente = null;
+                    for (Cliente c : loja.clientes) {
+                        if (c != null && c.getCpf().equals(cpfCliente)) {
+                            cliente = c;
+                            break;
+                        }
+                    }
+                    if (cliente == null) {
+                        JOptionPane.showMessageDialog(null, "Cliente não encontrado!");
+                        continue;
+                    }
+                    Produto[] carrinho = new Produto[100];
+                    int qtd = 0;
+                    while (true) {
+                        int idProduto = Integer.parseInt(JOptionPane.showInputDialog("Digite o ID do produto (0 para finalizar):"));
+                        if (idProduto == 0) break;
+                        for (Produto p : loja.produtos) {
+                            if (p != null && p.getId() == idProduto) {
+                                carrinho[qtd++] = p;
+                                break;
+                            }
+                        }
+                    }
+                    Produto[] produtosVenda = new Produto[qtd];
+                    System.arraycopy(carrinho, 0, produtosVenda, 0, qtd);
+                    loja.realizarVenda(cliente, produtosVenda);
+                }
+                case 4 -> JOptionPane.showMessageDialog(null, loja.listarClientes());
+                case 5 -> JOptionPane.showMessageDialog(null, loja.listarProdutos());
+                case 6 -> JOptionPane.showMessageDialog(null, loja.listarVendas());
+                case 0 -> JOptionPane.showMessageDialog(null, "Saindo do sistema...");
+                default -> JOptionPane.showMessageDialog(null, "Opção inválida!");
+            }
+        } while (opcao != 0);
+    }
+}
