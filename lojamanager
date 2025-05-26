@@ -1,0 +1,56 @@
+public class LojaManager {
+    Cliente[] clientes = new Cliente[100];
+    Produto[] produtos = new Produto[100];
+    private VendaManager[] vendas = new VendaManager[100];
+    private int qtdClientes = 0;
+    private int qtdProdutos = 0;
+    private int qtdVendas = 0;
+
+    public void adicionarCliente(Cliente c) {
+        if (qtdClientes < clientes.length) {
+            clientes[qtdClientes++] = c;
+        } else {
+            System.out.println("Limite de clientes atingido!");
+        }
+    }
+
+    public void adicionarProduto(Produto p) {
+        if (qtdProdutos < produtos.length) {
+            produtos[qtdProdutos++] = p;
+        } else {
+            System.out.println("Limite de produtos atingido!");
+        }
+    }
+
+    public void realizarVenda(Cliente c, Produto[] produtos) {
+        if (qtdVendas < vendas.length) {
+            vendas[qtdVendas++] = new VendaManager(c, produtos);
+        } else {
+            System.out.println("Limite de vendas atingido!");
+        }
+    }
+
+    public String listarClientes() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < qtdClientes; i++) {
+            sb.append(clientes[i].toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String listarProdutos() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < qtdProdutos; i++) {
+            sb.append(produtos[i].toString()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public String listarVendas() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < qtdVendas; i++) {
+            sb.append(vendas[i].toString()).append("\n");
+        }
+        return sb.toString();
+    }
+}
